@@ -18,6 +18,7 @@ defmodule Contex.TimeScale do
 
   # Approximate durations in ms for calculating ideal tick intervals
   # Modelled from https://github.com/d3/d3-scale/blob/v2.2.2/src/time.js
+  @duration_msec 1
   @duration_sec 1000
   @duration_min @duration_sec * 60
   @duration_hour @duration_min * 60
@@ -29,6 +30,10 @@ defmodule Contex.TimeScale do
   # Tuple defines: 1&2 - actual time intervals to calculate tick offsets & 3,
   # approximate time interval to determine if this is the best option
   @default_tick_intervals [
+    {:milliseconds, 1, @duration_msec},
+    {:milliseconds, 100, @duration_msec * 100},
+    {:milliseconds, 250, @duration_msec * 250},
+    {:milliseconds, 500, @duration_msec * 500},
     {:seconds, 1, @duration_sec},
     {:seconds, 5, @duration_sec * 5},
     {:seconds, 15, @duration_sec * 15},
@@ -219,6 +224,7 @@ defmodule Contex.TimeScale do
     %{dt | microsecond: {0, 0}, second: 0, minute: 0, hour: 0, day: day, month: month, year: year}
   end
 
+  defp guess_display_format({:milliseconds, _, _}), do: "%M:%S.%f"
   defp guess_display_format({:seconds, _, _}), do: "%M:%S"
   defp guess_display_format({:minutes, _, _}), do: "%H:%M:%S"
   defp guess_display_format({:hours, 1, _}), do: "%H:%M:%S"
